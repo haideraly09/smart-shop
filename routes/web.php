@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\SupplierController;
 
 
 Route::get('/', function () {
@@ -34,6 +35,8 @@ Route::middleware(['auth', 'admin'])
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('categories', CategoryController::class)->except('show');
           Route::resource('brands', BrandController::class)->except('show');
+
+          Route::resource('suppliers', SupplierController::class)->except('show');
     });
 
   
