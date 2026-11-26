@@ -1,0 +1,61 @@
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Categories</h2>
+            <a href="{{ route('admin.categories.create') }}"
+               class="px-4 py-2 bg-gray-800 text-white rounded-md text-sm">+ Nayi Category</a>
+        </div>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            @if (session('success'))
+                <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <div class="bg-white shadow-sm sm:rounded-lg p-6">
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="py-2">#</th>
+                            <th class="py-2">Naam</th>
+                            <th class="py-2">Description</th>
+                            <th class="py-2">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($categories as $category)
+                            <tr class="border-b">
+                                <td class="py-2">{{ $category->id }}</td>
+                                <td class="py-2">{{ $category->name }}</td>
+                                <td class="py-2">{{ $category->description }}</td>
+                                <td class="py-2 flex gap-3">
+                                    <a href="{{ route('admin.categories.edit', $category) }}"
+                                       class="text-blue-600">Edit</a>
+                                    <form method="POST"
+                                          action="{{ route('admin.categories.destroy', $category) }}"
+                                          onsubmit="return confirm('Pakka delete karna hai?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="text-red-600">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="py-4 text-center text-gray-500">
+                                    Abhi koi category nahi hai.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+
+                <div class="mt-4">{{ $categories->links() }}</div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
