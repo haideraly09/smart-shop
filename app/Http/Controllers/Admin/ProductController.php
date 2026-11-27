@@ -10,17 +10,27 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
-    {
-        $products = Product::with(['category', 'brand', 'supplier'])
-            ->latest()
-            ->paginate(10);
+    public function index(Request $request)
+{
+    $search = $request->query('search');
 
-        return view('admin.products.index', compact('products'));
-    }
+    $products = Product::with(['category', 'brand', 'supplier'])
+        ->when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%");
+            });
+        })
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
+
+    return view('admin.products.index', compact('products', 'search'));
+}
 
     public function create()
     {

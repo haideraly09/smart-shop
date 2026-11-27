@@ -16,6 +16,21 @@
                 </div>
             @endif
 
+<form method="GET" action="{{ route('admin.products.index') }}" class="mb-4 flex gap-2">
+    <input type="text" name="search" value="{{ $search }}"
+           placeholder="Naam ya SKU se dhoondein..."
+           class="border border-gray-300 rounded w-full max-w-sm">
+    <button class="px-4 py-2 bg-gray-800 text-white rounded">Search</button>
+
+    @if ($search)
+        <a href="{{ route('admin.products.index') }}"
+           class="px-4 py-2 text-gray-600">Clear</a>
+    @endif
+</form>
+
+
+
+
             <div class="bg-white shadow-sm sm:rounded-lg p-6 overflow-x-auto">
                 <table class="w-full text-left text-sm">
                     <thead>
@@ -62,9 +77,13 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr>
+                             <tr>
                                 <td colspan="8" class="py-4 text-center text-gray-500">
-                                    Abhi koi product nahi hai.
+                                    @if ($search)
+                                        "{{ $search }}" ke liye koi product nahi mila.
+                                    @else
+                                        Abhi koi product nahi hai.
+                                    @endif
                                 </td>
                             </tr>
                         @endforelse
