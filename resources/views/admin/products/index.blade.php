@@ -16,20 +16,23 @@
                 </div>
             @endif
 
-<form method="GET" action="{{ route('admin.products.index') }}" class="mb-4 flex gap-2">
-    <input type="text" name="search" value="{{ $search }}"
-           placeholder="Naam ya SKU se dhoondein..."
-           class="border border-gray-300 rounded w-full max-w-sm">
-    <button class="px-4 py-2 bg-gray-800 text-white rounded">Search</button>
+            <form method="GET" action="{{ route('admin.products.index') }}" class="mb-4 flex items-center gap-2">
+                <input type="text" name="search" value="{{ $search }}"
+                       placeholder="Naam ya SKU se dhoondein..."
+                       class="border border-gray-300 rounded w-full max-w-sm">
 
-    @if ($search)
-        <a href="{{ route('admin.products.index') }}"
-           class="px-4 py-2 text-gray-600">Clear</a>
-    @endif
-</form>
+                <label class="flex items-center gap-1 text-sm text-gray-700">
+                    <input type="checkbox" name="low_stock" value="1" @checked($lowStock)>
+                    Sirf low stock
+                </label>
 
+                <button class="px-4 py-2 bg-gray-800 text-white rounded">Search</button>
 
-
+                @if ($search || $lowStock)
+                    <a href="{{ route('admin.products.index') }}"
+                       class="px-4 py-2 text-gray-600">Clear</a>
+                @endif
+            </form>
 
             <div class="bg-white shadow-sm sm:rounded-lg p-6 overflow-x-auto">
                 <table class="w-full text-left text-sm">
@@ -47,7 +50,7 @@
                     </thead>
                     <tbody>
                         @forelse ($products as $product)
-                            <tr class="border-b {{ $product->quantity <= $product->low_stock_limit ? 'bg-red-50 text-red-700' : '' }}">
+                            <tr class="border-b {{ $product->isLowStock() ? 'bg-red-50 text-red-700' : '' }}">
                                 <td class="py-2">
                                     @if ($product->image)
                                         <img src="{{ asset('storage/' . $product->image) }}"
@@ -61,7 +64,12 @@
                                 <td class="py-2">{{ $product->category->name ?? '-' }}</td>
                                 <td class="py-2">{{ $product->brand->name ?? '-' }}</td>
                                 <td class="py-2">{{ number_format($product->price, 2) }}</td>
-                                <td class="py-2">{{ $product->quantity }}</td>
+                                <td class="py-2">
+                                    {{ $product->quantity }}
+                                    @if ($product->isLowStock())
+                                        <span class="ml-1 px-2 py-0.5 text-xs bg-red-600 text-white rounded">Low</span>
+                                    @endif
+                                </td>
                                 <td class="py-2">
                                     <div class="flex gap-3">
                                         <a href="{{ route('admin.products.edit', $product) }}"
@@ -77,7 +85,7 @@
                                 </td>
                             </tr>
                         @empty
-                             <tr>
+                            <tr>
                                 <td colspan="8" class="py-4 text-center text-gray-500">
                                     @if ($search)
                                         "{{ $search }}" ke liye koi product nahi mila.

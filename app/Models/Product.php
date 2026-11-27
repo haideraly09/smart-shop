@@ -30,4 +30,9 @@ class Product extends Model
     {
         return $this->belongsTo(Supplier::class);
     }
+
+    public function isLowStock(): bool
+    {
+        return $this->quantity <= $this->low_stock_limit;
+    }
 }

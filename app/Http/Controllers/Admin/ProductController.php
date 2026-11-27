@@ -14,9 +14,10 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index(Request $request)
+public function index(Request $request)
 {
     $search = $request->query('search');
+    $lowStock = $request->boolean('low_stock');
 
     $products = Product::with(['category', 'brand', 'supplier'])
         ->when($search, function ($query, $search) {
@@ -25,11 +26,12 @@ class ProductController extends Controller
                   ->orWhere('sku', 'like', "%{$search}%");
             });
         })
+        ->when($lowStock, fn ($query) => $query->lowStock())
         ->latest()
         ->paginate(10)
         ->withQueryString();
 
-    return view('admin.products.index', compact('products', 'search'));
+    return view('admin.products.index', compact('products', 'search', 'lowStock'));
 }
 
     public function create()
