@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\ProductController;
 
 
 Route::get('/', function () {
@@ -37,6 +38,7 @@ Route::middleware(['auth', 'admin'])
           Route::resource('brands', BrandController::class)->except('show');
 
           Route::resource('suppliers', SupplierController::class)->except('show');
+          Route::resource('products', ProductController::class)->except('show');
     });
 
   
