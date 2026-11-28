@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,6 +30,12 @@ class Product extends Model
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);
+    }
+
+    // Query scope: Product::lowStock()
+    public function scopeLowStock(Builder $query): Builder
+    {
+        return $query->whereColumn('quantity', '<=', 'low_stock_limit');
     }
 
     public function isLowStock(): bool
